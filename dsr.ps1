@@ -7,6 +7,7 @@ $backup1 = "$backupdir\backup1"
 $backup2 = "$backupdir\backup2"
 $backup3 = "$backupdir\backup3"
 $backup4 = "$backupdir\backup4"
+$backup5 = "$backupdir\backup5"
 $backupcmd = "xcopy /s /c /d /e /i /y"
 $totalTime = 600
 $remainingTime = 0
@@ -20,21 +21,11 @@ if (-not $process) {
 # Backup loop
 while ($true) {
     Clear-Host
+    Invoke-Expression "$backupcmd `"$backup4`" `"$backup5`""
     Invoke-Expression "$backupcmd `"$backup3`" `"$backup4`""
-    Write-Output "Backed up saves to $backup4."
-    Write-Output ""
     Invoke-Expression "$backupcmd `"$backup2`" `"$backup3`""
-    Write-Output "Backed up saves to $backup3."
-    Write-Output ""
     Invoke-Expression "$backupcmd `"$backup1`" `"$backup2`""
-    Write-Output "Backed up saves to $backup2."
-    Write-Output ""
-    Invoke-Expression "$backupcmd `"$currsave`" `"$backup1`""
-    Write-Output "Backed up saves to $backup1."
-    Write-Output ""
-    Invoke-Expression "$backupcmd `"$srcdir`" `"$currsave`""
-    Write-Output "Backed up saves to $currsave."
-    Write-Output ""
+    Invoke-Expression "$backupcmd `"$srcdir`"  `"$backup1`""
     Write-Output "Backup Complete!"
 
     for ($remainingTime = $totalTime; $remainingTime -ge 0; $remainingTime--) {
@@ -45,6 +36,7 @@ while ($true) {
         # Check if the game is still running
         $process = Get-Process -Name "DarkSoulsRemastered" -ErrorAction SilentlyContinue
         if (-not $process) {
+            Invoke-Expression "$backupcmd `"$srcdir`" `"$currsave`""
             break 2  # Exit both loops if the process is not found
         }
     }
