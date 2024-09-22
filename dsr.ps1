@@ -8,7 +8,8 @@ $backup2 = "$backupdir\backup2"
 $backup3 = "$backupdir\backup3"
 $backup4 = "$backupdir\backup4"
 $backupcmd = "xcopy /s /c /d /e /i /y"
-$waittime = 600
+$totalTime = 600
+$remainingTime = 0
 $checkInterval = 2
 
 # Start the game
@@ -16,7 +17,7 @@ Start-Process -FilePath "cmd.exe" -ArgumentList "/c `"startgame.bat`""
 
 # Backup loop
 while ($true) {
-    cls
+    Clear-Host
     Invoke-Expression "$backupcmd `"$backup3`" `"$backup4`""
     Write-Output "Backed up saves to $backup4."
     Write-Output ""
@@ -35,9 +36,10 @@ while ($true) {
     Write-Output "Backup Complete!"
 
     $elapsedTime = 0
-    while ($elapsedTime -lt $waittime) {
+    for ($remainingTime = $totalTime; $remainingTime -ge 0; $remainingTime--) {
+        $percentComplete = (($totalTime - $remainingTime) / $totalTime) * 100
+        Write-Progress -Activity "Time to the next backup cycle::" -Status "$remainingTime seconds" -PercentComplete $percentComplete
         Start-Sleep -Seconds $checkInterval
-        $elapsedTime += $checkInterval
 
         # Check if the game is still running
         $process = Get-Process -Name "DarkSoulsRemastered" -ErrorAction SilentlyContinue
