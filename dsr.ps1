@@ -11,8 +11,11 @@ $backupcmd = "xcopy /s /c /d /e /i /y"
 $totalTime = 600
 $remainingTime = 0
 
-# Start the game
-Start-Process -FilePath "cmd.exe" -ArgumentList "/c `"startgame.bat`""
+# Start the game, if it's not already started.
+$process = Get-Process -Name "DarkSoulsRemastered" -ErrorAction SilentlyContinue
+if (-not $process) {
+    Start-Process -FilePath "cmd.exe" -ArgumentList "/c `"startgame.bat`""
+}
 
 # Backup loop
 while ($true) {
